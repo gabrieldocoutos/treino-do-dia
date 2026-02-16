@@ -31,8 +31,7 @@ model Coach {
   id               String   @id @default(uuid())
   userProfileId    String   @unique
   name             String
-  plan             PlanType @default(FREE)
-  stripeCustomerId String?
+  plan PlanType @default(FREE)
 
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
 
