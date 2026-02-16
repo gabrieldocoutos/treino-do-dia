@@ -14,13 +14,17 @@
   },
   "dependencies": {
     "@fastify/cors": "^10",
+    "@fastify/jwt": "^10.0.0",
     "@fastify/sensible": "^6",
     "@prisma/client": "^6",
     "@treino/shared": "workspace:*",
-    "fastify": "^5"
+    "bcryptjs": "^3.0.3",
+    "fastify": "^5",
+    "fastify-plugin": "^5.1.0"
   },
   "devDependencies": {
     "@treino/tsconfig": "workspace:*",
+    "@types/bcryptjs": "^3.0.0",
     "prisma": "^6",
     "tsx": "^4",
     "typescript": "^5.7"

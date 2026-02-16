@@ -18,13 +18,19 @@ enum PlanType {
 }
 
 model UserProfile {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  role      UserRole
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String?
+  role         UserRole
+  isActive     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  coach   Coach?
-  athlete Athlete?
+  coach              Coach?
+  athlete            Athlete?
+  refreshTokens      RefreshToken[]
+  inviteToken        InviteToken?
+  passwordResetToken PasswordResetToken?
 }
 
 model Coach {
@@ -123,4 +129,43 @@ model WorkoutLog {
   programDay ProgramDay @relation(fields: [programDayId], references: [id])
 
   @@unique([athleteId, programDayId])
+}
+
+model RefreshToken {
+  id            String   @id @default(uuid())
+  token         String   @unique
+  userProfileId String
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userProfileId])
+}
+
+model InviteToken {
+  id            String    @id @default(uuid())
+  token         String    @unique
+  userProfileId String    @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
+
+model PasswordResetToken {
+  id            String    @id @default(uuid())
+  token         String    @unique
+  userProfileId String    @unique
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+
+  @@index([token])
 }

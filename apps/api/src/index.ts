@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 import sensible from "@fastify/sensible";
+import prismaPlugin from "./plugins/prisma.js";
+import jwtPlugin from "./plugins/jwt.js";
 import { registerCors } from "./plugins/cors.js";
 import { registerRoutes } from "./routes/index.js";
 
@@ -8,6 +10,8 @@ const app = Fastify({
 });
 
 await app.register(sensible);
+await app.register(prismaPlugin);
+await app.register(jwtPlugin);
 await registerCors(app);
 await registerRoutes(app);
 
