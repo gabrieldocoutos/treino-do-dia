@@ -1,0 +1,17 @@
+{
+  "name": "treino-do-dia",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "db:generate": "pnpm --filter @treino/api db:generate",
+    "db:push": "pnpm --filter @treino/api db:push",
+    "db:studio": "pnpm --filter @treino/api db:studio"
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  },
+  "packageManager": "pnpm@9.15.4"
+}
