@@ -1144,5 +1144,11 @@ Expected a subset of: ${expected.join(", ")}
 };
 
 // src/tamagui.config.ts
-var config = createTamagui(defaultConfig);
+var config = createTamagui({
+  ...defaultConfig,
+  settings: {
+    ...defaultConfig.settings,
+    onlyAllowShorthands: false
+  }
+});
 var tamagui_config_default = config;

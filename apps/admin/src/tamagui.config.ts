@@ -1,12 +1,12 @@
 import { defaultConfig } from '@tamagui/config/v5'
 import { createTamagui } from 'tamagui'
 
-const config = createTamagui(defaultConfig)
-
-type Conf = typeof config
-
-declare module '@tamagui/core' {
-  interface TamaguiCustomConfig extends Conf {}
-}
+const config = createTamagui({
+  ...defaultConfig,
+  settings: {
+    ...defaultConfig.settings,
+    onlyAllowShorthands: false,
+  },
+})
 
 export default config
