@@ -7,10 +7,121 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+enum UserRole {
+  COACH
+  ATHLETE
+}
+
+enum PlanType {
+  FREE
+  PRO
+}
+
+model UserProfile {
   id        String   @id @default(uuid())
-  name      String
   email     String   @unique
+  role      UserRole
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  coach   Coach?
+  athlete Athlete?
+}
+
+model Coach {
+  id               String   @id @default(uuid())
+  userProfileId    String   @unique
+  name             String
+  plan             PlanType @default(FREE)
+  stripeCustomerId String?
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+
+  athletes  Athlete[]
+  programs  Program[]
+}
+
+model Athlete {
+  id            String @id @default(uuid())
+  userProfileId String @unique
+  coachId       String
+  name          String
+  notes         String?
+
+  userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+  coach       Coach       @relation(fields: [coachId], references: [id])
+
+  assignments  Assignment[]
+  workoutLogs  WorkoutLog[]
+}
+
+model Program {
+  id          String @id @default(uuid())
+  coachId     String
+  title       String
+  description String?
+
+  coach Coach @relation(fields: [coachId], references: [id])
+
+  days ProgramDay[]
+  assignments Assignment[]
+}
+
+model ProgramDay {
+  id        String @id @default(uuid())
+  programId String
+  dayNumber Int
+  title     String?
+
+  program Program @relation(fields: [programId], references: [id])
+
+  exercises   ProgramExercise[]
+  workoutLogs WorkoutLog[]
+}
+
+model Exercise {
+  id       String @id @default(uuid())
+  name     String
+  videoUrl String?
+
+  programExercises ProgramExercise[]
+}
+
+model ProgramExercise {
+  id            String @id @default(uuid())
+  programDayId  String
+  exerciseId    String
+  sets          String?
+  reps          String?
+  load          String?
+  notes         String?
+  order         Int
+
+  programDay ProgramDay @relation(fields: [programDayId], references: [id])
+  exercise   Exercise   @relation(fields: [exerciseId], references: [id])
+}
+
+model Assignment {
+  id        String   @id @default(uuid())
+  programId String
+  athleteId String
+  startDate DateTime
+  active    Boolean  @default(true)
+
+  program Program @relation(fields: [programId], references: [id])
+  athlete Athlete @relation(fields: [athleteId], references: [id])
+
+  @@unique([programId, athleteId])
+}
+
+model WorkoutLog {
+  id           String   @id @default(uuid())
+  athleteId    String
+  programDayId String
+  completedAt  DateTime @default(now())
+  comment      String?
+
+  athlete    Athlete    @relation(fields: [athleteId], references: [id])
+  programDay ProgramDay @relation(fields: [programDayId], references: [id])
+
+  @@unique([athleteId, programDayId])
 }
