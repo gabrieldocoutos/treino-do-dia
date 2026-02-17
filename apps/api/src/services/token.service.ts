@@ -1,7 +1,7 @@
-import { randomBytes } from "crypto";
+import { randomBytes } from 'node:crypto';
 
 export function generateToken(): string {
-  return randomBytes(32).toString("hex");
+  return randomBytes(32).toString('hex');
 }
 
 export function createExpiry(hours: number): Date {

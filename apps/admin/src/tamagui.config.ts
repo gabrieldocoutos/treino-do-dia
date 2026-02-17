@@ -1,5 +1,5 @@
-import { defaultConfig } from '@tamagui/config/v5'
-import { createTamagui } from 'tamagui'
+import { defaultConfig } from '@tamagui/config/v5';
+import { createTamagui } from 'tamagui';
 
 const config = createTamagui({
   ...defaultConfig,
@@ -7,6 +7,6 @@ const config = createTamagui({
     ...defaultConfig.settings,
     onlyAllowShorthands: false,
   },
-})
+});
 
-export default config
+export default config;

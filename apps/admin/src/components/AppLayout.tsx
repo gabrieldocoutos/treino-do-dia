@@ -1,15 +1,15 @@
-import { Outlet, useNavigate } from 'react-router-dom'
-import { Button, Separator, Text, XStack, YStack } from 'tamagui'
-import { useAuth } from '../contexts/AuthContext'
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Button, Separator, Text, XStack, YStack } from 'tamagui';
+import { useAuth } from '../contexts/AuthContext';
 
 export function AppLayout() {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logout()
-    navigate('/login')
-  }
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <YStack flex={1} minHeight="100vh">
@@ -34,5 +34,5 @@ export function AppLayout() {
         <Outlet />
       </YStack>
     </YStack>
-  )
+  );
 }

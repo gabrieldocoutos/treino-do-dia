@@ -1,21 +1,13 @@
-import type { FastifyInstance } from "fastify";
-import type {
-  RegisterCoach,
-  Login,
-  InviteAthlete,
-} from "@treino/shared";
-import { hashPassword, verifyPassword } from "./password.service.js";
-import { generateToken, createExpiry } from "./token.service.js";
+import type { InviteAthlete, Login, RegisterCoach } from '@treino/shared';
+import type { FastifyInstance } from 'fastify';
+import { hashPassword, verifyPassword } from './password.service.js';
+import { createExpiry, generateToken } from './token.service.js';
 
 const REFRESH_TOKEN_EXPIRY_HOURS = 7 * 24; // 7 days
 const INVITE_TOKEN_EXPIRY_HOURS = 7 * 24; // 7 days
 const RESET_TOKEN_EXPIRY_HOURS = 1; // 1 hour
 
-function createTokenPayload(user: {
-  id: string;
-  email: string;
-  role: "COACH" | "ATHLETE";
-}) {
+function createTokenPayload(user: { id: string; email: string; role: 'COACH' | 'ATHLETE' }) {
   return { id: user.id, email: user.email, role: user.role };
 }
 
@@ -26,7 +18,7 @@ export async function registerCoach(app: FastifyInstance, data: RegisterCoach) {
     data: {
       email: data.email,
       passwordHash,
-      role: "COACH",
+      role: 'COACH',
       isActive: true,
       coach: {
         create: {
@@ -60,26 +52,23 @@ export async function login(app: FastifyInstance, data: Login) {
   });
 
   if (!userProfile || !userProfile.passwordHash) {
-    throw app.httpErrors.unauthorized("Invalid email or password");
+    throw app.httpErrors.unauthorized('Invalid email or password');
   }
 
   if (!userProfile.isActive) {
-    throw app.httpErrors.unauthorized("Account is not active");
+    throw app.httpErrors.unauthorized('Account is not active');
   }
 
   const valid = await verifyPassword(data.password, userProfile.passwordHash);
   if (!valid) {
-    throw app.httpErrors.unauthorized("Invalid email or password");
+    throw app.httpErrors.unauthorized('Invalid email or password');
   }
 
   const payload = createTokenPayload(userProfile);
   const accessToken = app.jwt.sign(payload);
   const refreshToken = await createRefreshToken(app, userProfile.id);
 
-  const name =
-    userProfile.role === "COACH"
-      ? userProfile.coach!.name
-      : userProfile.athlete!.name;
+  const name = userProfile.role === 'COACH' ? userProfile.coach!.name : userProfile.athlete!.name;
 
   return {
     accessToken,
@@ -103,7 +92,7 @@ export async function inviteAthlete(
   });
 
   if (!coach) {
-    throw app.httpErrors.notFound("Coach not found");
+    throw app.httpErrors.notFound('Coach not found');
   }
 
   const token = generateToken();
@@ -111,7 +100,7 @@ export async function inviteAthlete(
   const userProfile = await app.prisma.userProfile.create({
     data: {
       email: data.email,
-      role: "ATHLETE",
+      role: 'ATHLETE',
       isActive: false,
       athlete: {
         create: {
@@ -135,17 +124,13 @@ export async function inviteAthlete(
   };
 }
 
-export async function activateAthlete(
-  app: FastifyInstance,
-  token: string,
-  password: string,
-) {
+export async function activateAthlete(app: FastifyInstance, token: string, password: string) {
   const invite = await app.prisma.inviteToken.findUnique({
     where: { token },
   });
 
   if (!invite || invite.usedAt || invite.expiresAt < new Date()) {
-    throw app.httpErrors.badRequest("Invalid or expired invite token");
+    throw app.httpErrors.badRequest('Invalid or expired invite token');
   }
 
   const passwordHash = await hashPassword(password);
@@ -162,10 +147,7 @@ export async function activateAthlete(
   ]);
 }
 
-export async function requestPasswordReset(
-  app: FastifyInstance,
-  email: string,
-) {
+export async function requestPasswordReset(app: FastifyInstance, email: string) {
   const userProfile = await app.prisma.userProfile.findUnique({
     where: { email },
   });
@@ -195,17 +177,13 @@ export async function requestPasswordReset(
   return { resetToken: token };
 }
 
-export async function resetPassword(
-  app: FastifyInstance,
-  token: string,
-  password: string,
-) {
+export async function resetPassword(app: FastifyInstance, token: string, password: string) {
   const resetToken = await app.prisma.passwordResetToken.findUnique({
     where: { token },
   });
 
   if (!resetToken || resetToken.usedAt || resetToken.expiresAt < new Date()) {
-    throw app.httpErrors.badRequest("Invalid or expired reset token");
+    throw app.httpErrors.badRequest('Invalid or expired reset token');
   }
 
   const passwordHash = await hashPassword(password);
@@ -226,17 +204,14 @@ export async function resetPassword(
   ]);
 }
 
-export async function refreshAccessToken(
-  app: FastifyInstance,
-  token: string,
-) {
+export async function refreshAccessToken(app: FastifyInstance, token: string) {
   const stored = await app.prisma.refreshToken.findUnique({
     where: { token },
     include: { userProfile: true },
   });
 
   if (!stored || stored.expiresAt < new Date()) {
-    throw app.httpErrors.unauthorized("Invalid or expired refresh token");
+    throw app.httpErrors.unauthorized('Invalid or expired refresh token');
   }
 
   const payload = createTokenPayload(stored.userProfile);
@@ -258,13 +233,10 @@ export async function getMe(app: FastifyInstance, userId: string) {
   });
 
   if (!userProfile) {
-    throw app.httpErrors.notFound("User not found");
+    throw app.httpErrors.notFound('User not found');
   }
 
-  const name =
-    userProfile.role === "COACH"
-      ? userProfile.coach!.name
-      : userProfile.athlete!.name;
+  const name = userProfile.role === 'COACH' ? userProfile.coach!.name : userProfile.athlete!.name;
 
   return {
     id: userProfile.id,
@@ -274,10 +246,7 @@ export async function getMe(app: FastifyInstance, userId: string) {
   };
 }
 
-async function createRefreshToken(
-  app: FastifyInstance,
-  userProfileId: string,
-): Promise<string> {
+async function createRefreshToken(app: FastifyInstance, userProfileId: string): Promise<string> {
   const token = generateToken();
 
   await app.prisma.refreshToken.create({

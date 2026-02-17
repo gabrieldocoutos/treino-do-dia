@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom'
-import { YStack } from 'tamagui'
+import { Outlet } from 'react-router-dom';
+import { YStack } from 'tamagui';
 
 export function AuthLayout() {
   return (
@@ -12,5 +12,5 @@ export function AuthLayout() {
     >
       <Outlet />
     </YStack>
-  )
+  );
 }

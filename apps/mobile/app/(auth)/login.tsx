@@ -1,32 +1,32 @@
-import { useState } from 'react'
-import { KeyboardAvoidingView, Platform } from 'react-native'
-import { loginSchema } from '@treino/shared'
-import { Button, Card, H2, Input, Label, Spinner, Text, YStack } from 'tamagui'
-import { useAuth } from '@/contexts/AuthContext'
+import { loginSchema } from '@treino/shared';
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { Button, Card, H2, Input, Label, Spinner, Text, YStack } from 'tamagui';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginScreen() {
-  const { login } = useAuth()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    setError(null)
-    const result = loginSchema.safeParse({ email, password })
+    setError(null);
+    const result = loginSchema.safeParse({ email, password });
     if (!result.success) {
-      setError(result.error.errors[0].message)
-      return
+      setError(result.error.errors[0].message);
+      return;
     }
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-      await login({ email, password })
+      await login({ email, password });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha no login')
+      setError(err instanceof Error ? err.message : 'Falha no login');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -73,17 +73,12 @@ export default function LoginScreen() {
               />
             </YStack>
 
-            <Button
-              themeInverse
-              size="$4"
-              onPress={handleSubmit}
-              disabled={isSubmitting}
-            >
+            <Button themeInverse size="$4" onPress={handleSubmit} disabled={isSubmitting}>
               {isSubmitting ? <Spinner /> : 'Entrar'}
             </Button>
           </YStack>
         </Card>
       </YStack>
     </KeyboardAvoidingView>
-  )
+  );
 }

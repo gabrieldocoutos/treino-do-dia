@@ -1,4 +1,4 @@
-import { H2, Text, YStack } from 'tamagui'
+import { H2, Text, YStack } from 'tamagui';
 
 export default function WorkoutsScreen() {
   return (
@@ -6,5 +6,5 @@ export default function WorkoutsScreen() {
       <H2>Treinos</H2>
       <Text color="$gray10">Seus treinos (em breve)</Text>
     </YStack>
-  )
+  );
 }

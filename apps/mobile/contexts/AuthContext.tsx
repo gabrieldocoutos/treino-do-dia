@@ -1,72 +1,67 @@
-import { createContext, useContext, useEffect, useState } from 'react'
-import type { Login } from '@treino/shared'
-import { authApi } from '../lib/api'
-import type { AuthUser } from '../lib/api'
-import {
-  clearTokens,
-  getAccessToken,
-  getRefreshToken,
-  setTokens,
-} from '../lib/storage'
+import type { Login } from '@treino/shared';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { AuthUser } from '../lib/api';
+import { authApi } from '../lib/api';
+import { clearTokens, getAccessToken, getRefreshToken, setTokens } from '../lib/storage';
 
 interface AuthContextValue {
-  user: AuthUser | null
-  isLoading: boolean
-  isAuthenticated: boolean
-  login: (data: Login) => Promise<void>
-  logout: () => Promise<void>
+  user: AuthUser | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  login: (data: Login) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null)
+const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const accessToken = await getAccessToken()
+      const accessToken = await getAccessToken();
       if (!accessToken) {
-        setIsLoading(false)
-        return
+        setIsLoading(false);
+        return;
       }
       try {
-        const res = await authApi.me()
+        const res = await authApi.me();
         if (res.success) {
-          setUser(res.data)
+          setUser(res.data);
         } else {
-          await clearTokens()
+          await clearTokens();
         }
       } catch {
-        await clearTokens()
+        await clearTokens();
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    checkAuth()
-  }, [])
+    };
+    checkAuth();
+  }, []);
 
   const login = async (data: Login) => {
-    const res = await authApi.login(data)
+    const res = await authApi.login(data);
     if (!res.success) {
-      throw new Error(res.message ?? 'Login failed')
+      throw new Error(res.message ?? 'Login failed');
     }
-    await setTokens(res.data.accessToken, res.data.refreshToken)
-    setUser(res.data.user)
-  }
+    await setTokens(res.data.accessToken, res.data.refreshToken);
+    setUser(res.data.user);
+  };
 
   const logout = async () => {
-    const refreshToken = await getRefreshToken()
+    const refreshToken = await getRefreshToken();
     if (refreshToken) {
       try {
-        await authApi.logout(refreshToken)
+        await authApi.logout(refreshToken);
       } catch {
         // best effort
       }
     }
-    await clearTokens()
-    setUser(null)
-  }
+    await clearTokens();
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider
@@ -74,13 +69,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
     </AuthContext.Provider>
-  )
+  );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+    throw new Error('useAuth must be used within AuthProvider');
   }
-  return context
+  return context;
 }

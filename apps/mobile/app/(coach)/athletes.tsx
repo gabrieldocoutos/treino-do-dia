@@ -1,4 +1,4 @@
-import { H2, Text, YStack } from 'tamagui'
+import { H2, Text, YStack } from 'tamagui';
 
 export default function AthletesScreen() {
   return (
@@ -6,5 +6,5 @@ export default function AthletesScreen() {
       <H2>Atletas</H2>
       <Text color="$gray10">Lista de atletas (em breve)</Text>
     </YStack>
-  )
+  );
 }

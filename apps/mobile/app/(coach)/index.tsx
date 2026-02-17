@@ -1,8 +1,8 @@
-import { Button, Card, H2, Separator, Text, YStack } from 'tamagui'
-import { useAuth } from '@/contexts/AuthContext'
+import { Button, Card, H2, Separator, Text, YStack } from 'tamagui';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function CoachDashboardScreen() {
-  const { user, logout } = useAuth()
+  const { user, logout } = useAuth();
 
   return (
     <YStack flex={1} padding="$4" gap="$4">
@@ -19,5 +19,5 @@ export default function CoachDashboardScreen() {
         Sair
       </Button>
     </YStack>
-  )
+  );
 }

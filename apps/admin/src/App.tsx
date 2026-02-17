@@ -1,14 +1,13 @@
-import { Route, Routes } from 'react-router-dom'
-import { TamaguiProvider } from 'tamagui'
-
-import config from './tamagui.config'
-import { AuthProvider } from './contexts/AuthContext'
-import { ErrorBoundary } from './components/ErrorBoundary'
-import { AppLayout } from './components/AppLayout'
-import { AuthLayout } from './components/AuthLayout'
-import { ProtectedRoute } from './components/ProtectedRoute'
-import { DashboardPage } from './pages/DashboardPage'
-import { LoginPage } from './pages/LoginPage'
+import { Route, Routes } from 'react-router-dom';
+import { TamaguiProvider } from 'tamagui';
+import { AppLayout } from './components/AppLayout';
+import { AuthLayout } from './components/AuthLayout';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
+import { DashboardPage } from './pages/DashboardPage';
+import { LoginPage } from './pages/LoginPage';
+import config from './tamagui.config';
 
 function App() {
   return (
@@ -16,20 +15,20 @@ function App() {
       <ErrorBoundary>
         <AuthProvider>
           <Routes>
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-          </Route>
-
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<DashboardPage />} />
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
             </Route>
-          </Route>
+
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<DashboardPage />} />
+              </Route>
+            </Route>
           </Routes>
         </AuthProvider>
       </ErrorBoundary>
     </TamaguiProvider>
-  )
+  );
 }
 
-export default App
+export default App;

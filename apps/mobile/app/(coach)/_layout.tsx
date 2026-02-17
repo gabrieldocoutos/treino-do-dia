@@ -1,9 +1,9 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { Tabs } from 'expo-router'
-import { useTheme } from 'tamagui'
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Tabs } from 'expo-router';
+import { useTheme } from 'tamagui';
 
 export default function CoachLayout() {
-  const theme = useTheme()
+  const theme = useTheme();
 
   return (
     <Tabs
@@ -31,5 +31,5 @@ export default function CoachLayout() {
         }}
       />
     </Tabs>
-  )
+  );
 }
