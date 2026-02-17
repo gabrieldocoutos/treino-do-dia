@@ -10,4 +10,7 @@ export default defineConfig({
       config: './src/tamagui.config.ts',
     }),
   ],
+  resolve: {
+    dedupe: ['react', 'react-dom'],
+  },
 })
