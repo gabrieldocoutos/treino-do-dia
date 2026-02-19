@@ -121,4 +121,13 @@ export const api = {
       body: JSON.stringify(body),
     });
   },
+  put<T>(path: string, body: unknown) {
+    return request<T>(path, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+  },
+  delete<T>(path: string) {
+    return request<T>(path, { method: 'DELETE' });
+  },
 };

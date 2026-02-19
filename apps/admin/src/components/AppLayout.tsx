@@ -1,6 +1,12 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Button, Separator, Text, XStack, YStack } from 'tamagui';
 import { useAuth } from '../contexts/AuthContext';
+
+const navItems = [
+  { to: '/', label: 'Painel' },
+  { to: '/athletes', label: 'Atletas' },
+  { to: '/programs', label: 'Programas' },
+];
 
 export function AppLayout() {
   const { user, logout } = useAuth();
@@ -30,9 +36,33 @@ export function AppLayout() {
         </XStack>
       </XStack>
       <Separator />
-      <YStack flex={1} padding="$4">
-        <Outlet />
-      </YStack>
+      <XStack flex={1}>
+        <YStack width={220} padding="$3" gap="$1" borderRightWidth={1} borderColor="$borderColor">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              style={{ textDecoration: 'none' }}
+            >
+              {({ isActive }) => (
+                <XStack
+                  padding="$3"
+                  borderRadius="$3"
+                  backgroundColor={isActive ? '$color4' : 'transparent'}
+                  hoverStyle={{ backgroundColor: isActive ? '$color4' : '$color2' }}
+                  cursor="pointer"
+                >
+                  <Text fontWeight={isActive ? 'bold' : 'normal'}>{item.label}</Text>
+                </XStack>
+              )}
+            </NavLink>
+          ))}
+        </YStack>
+        <YStack flex={1} padding="$4">
+          <Outlet />
+        </YStack>
+      </XStack>
     </YStack>
   );
 }

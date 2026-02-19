@@ -55,32 +55,35 @@ model Athlete {
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
   coach       Coach       @relation(fields: [coachId], references: [id])
 
-  assignments  Assignment[]
-  workoutLogs  WorkoutLog[]
+  programs    Program[]
+  workoutLogs WorkoutLog[]
 }
 
 model Program {
   id          String @id @default(uuid())
   coachId     String
+  athleteId   String
   title       String
   description String?
 
-  coach Coach @relation(fields: [coachId], references: [id])
+  coach   Coach   @relation(fields: [coachId], references: [id])
+  athlete Athlete @relation(fields: [athleteId], references: [id])
 
-  days ProgramDay[]
-  assignments Assignment[]
+  workouts Workout[]
 }
 
-model ProgramDay {
-  id        String @id @default(uuid())
+model Workout {
+  id        String   @id @default(uuid())
   programId String
-  dayNumber Int
+  date      DateTime @db.Date
   title     String?
 
   program Program @relation(fields: [programId], references: [id])
 
   exercises   ProgramExercise[]
   workoutLogs WorkoutLog[]
+
+  @@unique([programId, date])
 }
 
 model Exercise {
@@ -92,43 +95,30 @@ model Exercise {
 }
 
 model ProgramExercise {
-  id            String @id @default(uuid())
-  programDayId  String
-  exerciseId    String
-  sets          String?
-  reps          String?
-  load          String?
-  notes         String?
-  order         Int
+  id         String  @id @default(uuid())
+  workoutId  String
+  exerciseId String
+  sets       String?
+  reps       String?
+  load       String?
+  notes      String?
+  order      Int
 
-  programDay ProgramDay @relation(fields: [programDayId], references: [id])
-  exercise   Exercise   @relation(fields: [exerciseId], references: [id])
-}
-
-model Assignment {
-  id        String   @id @default(uuid())
-  programId String
-  athleteId String
-  startDate DateTime
-  active    Boolean  @default(true)
-
-  program Program @relation(fields: [programId], references: [id])
-  athlete Athlete @relation(fields: [athleteId], references: [id])
-
-  @@unique([programId, athleteId])
+  workout  Workout  @relation(fields: [workoutId], references: [id])
+  exercise Exercise @relation(fields: [exerciseId], references: [id])
 }
 
 model WorkoutLog {
-  id           String   @id @default(uuid())
-  athleteId    String
-  programDayId String
-  completedAt  DateTime @default(now())
-  comment      String?
+  id          String   @id @default(uuid())
+  athleteId   String
+  workoutId   String
+  completedAt DateTime @default(now())
+  comment     String?
 
-  athlete    Athlete    @relation(fields: [athleteId], references: [id])
-  programDay ProgramDay @relation(fields: [programDayId], references: [id])
+  athlete Athlete @relation(fields: [athleteId], references: [id])
+  workout Workout @relation(fields: [workoutId], references: [id])
 
-  @@unique([athleteId, programDayId])
+  @@unique([athleteId, workoutId])
 }
 
 model RefreshToken {
